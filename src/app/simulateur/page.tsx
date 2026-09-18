@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import AuthBar from '@/components/AuthBar'
 import Simulator from '@/components/Simulator'
 import Link from 'next/link'
@@ -15,7 +16,9 @@ export default function SimulatorPage() {
         </Link>
       </div>
       <div className="py-6">
-        <Simulator />
+        <Suspense fallback={<div className="text-center text-slate-400 py-12">Chargement du simulateur...</div>}>
+          <Simulator />
+        </Suspense>
       </div>
     </main>
   )
