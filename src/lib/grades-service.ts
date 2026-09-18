@@ -67,7 +67,7 @@ export async function getOrCreateActiveSemester(userId: string): Promise<Semeste
     else rawAssessments = assData || []
   }
 
-  // Assembler la hiérarchie TypeScript
+  // Assembler la hiérarchie TypeScript avec un cast sécurisé
   const subjects: Subject[] = (rawSubjects || []).map((s) => ({
     id: s.id,
     name: s.name,
@@ -81,7 +81,7 @@ export async function getOrCreateActiveSemester(userId: string): Promise<Semeste
         weight: Number(a.weight),
         grade: a.grade !== null ? Number(a.grade) : null,
       })),
-  }))
+  })) as unknown as Subject[]
 
   return {
     id: semester.id,
