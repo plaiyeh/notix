@@ -35,7 +35,7 @@ export interface Semester {
   id: string
   name: string
   targetAverage: number
-  subjects: Subject[] // <--- Ajoute cette ligne
+  units: UnitTeaching[] // Corrigé pour utiliser les unités (UnitTeaching)
 }
 
 export interface WeightedItem {
