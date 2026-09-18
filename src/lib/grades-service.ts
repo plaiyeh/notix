@@ -1,10 +1,10 @@
 import { createClient } from '@/utils/supabase/client'
-import { Semester, Subject, Assessment } from './calculator'
+import { Semester, Subject, Assessment, UnitTeaching } from './calculator'
 
 const supabase = createClient()
 
 /**
- * Récupère le premier semestre de l'utilisateur avec toutes ses matières et épreuves associées.
+ * Récupère le premier semestre de l'utilisateur avec toutes ses unités, matières et épreuves associées.
  */
 export async function getOrCreateActiveSemester(userId: string): Promise<Semester | null> {
   // 1. Chercher un semestre existant pour cet utilisateur
@@ -67,7 +67,7 @@ export async function getOrCreateActiveSemester(userId: string): Promise<Semeste
     else rawAssessments = assData || []
   }
 
-  // Assembler la hiérarchie TypeScript avec un cast sécurisé
+  // Assembler les matières et leurs épreuves
   const subjects: Subject[] = (rawSubjects || []).map((s) => ({
     id: s.id,
     name: s.name,
@@ -81,13 +81,24 @@ export async function getOrCreateActiveSemester(userId: string): Promise<Semeste
         weight: Number(a.weight),
         grade: a.grade !== null ? Number(a.grade) : null,
       })),
-  })) as unknown as Subject[]
+  }))
+
+  // Structurer sous forme d'unités (UnitTeaching) pour correspondre à l'interface Semester
+  const units: UnitTeaching[] = [
+    {
+      id: 'default-unit',
+      code: 'UE 1',
+      name: 'Tronc Commun',
+      coefficient: 1,
+      subjects,
+    },
+  ]
 
   return {
     id: semester.id,
     name: semester.name,
     targetAverage: Number(semester.target_average),
-    subjects,
+    units,
   }
 }
 
